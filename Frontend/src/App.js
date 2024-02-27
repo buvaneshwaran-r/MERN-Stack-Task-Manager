@@ -31,6 +31,24 @@ const App = () => {
     }
   };
 
+  const updateTask = async (taskId, updatedTask) => {
+    try {
+      await axios.put(`http://localhost:5000/api/tasks/${taskId}`, updatedTask);
+      fetchTasks();
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
+  };
+
+  const deleteTask = async (taskId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`);
+      fetchTasks();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
+
   return (
     <div>
       <h1>Task Manager</h1>
@@ -53,6 +71,10 @@ const App = () => {
         {tasks.map((task) => (
           <li key={task._id}>
             <strong>{task.title}</strong> - {task.description}
+            <button onClick={() => updateTask(task._id, { ...task, completed: !task.completed })}>
+              {task.completed ? 'Mark Incomplete' : 'Mark Complete'}
+            </button>
+            <button onClick={() => deleteTask(task._id)}>Delete</button>
           </li>
         ))}
       </ul>

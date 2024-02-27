@@ -45,7 +45,32 @@ app.post('/api/tasks', async (req, res) => {
   }
 });
 
-// Add routes for updating and deleting tasks as needed
+app.put('/api/tasks/:id', async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const { title, description, completed } = req.body;
+    const updatedTask = await Task.findByIdAndUpdate(
+      taskId,
+      { title, description, completed },
+      { new: true }
+    );
+    res.json(updatedTask);
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.delete('/api/tasks/:id', async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    await Task.findByIdAndDelete(taskId);
+    res.json({ message: 'Task deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // Start the server
 app.listen(PORT, () => {
